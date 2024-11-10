@@ -1,0 +1,27 @@
+/* 点滅アニメーション */
+@keyframes blinking {
+  0%, /* 初期状態 (不透明度 1) */
+  100% { /* 終了状態 (不透明度 1) */
+    opacity: 1;
+  }
+  50% { /* 中間状態 (不透明度 0) */
+    opacity: 0;
+  }
+}
+
+/* 背景色変更アニメーション */
+@keyframes blinking-color {
+  0%, /* 初期状態 (透明) */
+  100% { /* 終了状態 (透明) */
+    background-color: transparent;
+  }
+  50% { /* 中間状態 (ライトブルー) */
+    background-color: lightblue;
+  }
+}
+
+/* 点滅要素に適用するスタイル */
+.blinking {
+  animation: blinking 0.8s linear infinite, /* 点滅アニメーション */
+             blinking-color 0.8s linear infinite; /* 背景色変更アニメーション */
+}

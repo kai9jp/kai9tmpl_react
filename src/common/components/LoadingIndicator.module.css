@@ -1,0 +1,104 @@
+/* LoadingIndicator.module.css */
+
+/* コンテナのスタイル設定: 画面全体をカバーし、内容を中央に配置 */
+.loaderContainer {
+  display: flex;
+  flex-direction: column; /* 子要素を縦方向に配置 */
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* 固定位置 */
+  top: 0;
+  left: 0;
+  width: 100%; /* 幅全体 */
+  height: 100vh; /* 画面の高さ全体 */
+  background-color: rgba(0, 0, 0, 0.8); /* 半透明の黒色背景 */
+  z-index: 9999; /* 他の要素より前面に表示 */
+}
+
+/* ロゴのスタイル設定: 中央で回転 */
+.spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ロゴ画像のスタイル設定 */
+.reactLogo {
+  width: 200px; /* 画像の幅 */
+  height: 200px; /* 画像の高さ */
+  animation: spin 10s linear infinite; /* 無限に回転 */
+}
+
+/* ローディングテキストのスタイル設定 */
+.loadingText {
+  margin-top: 20px; /* ロゴとの間隔 */
+  color: white; /* 文字色 */
+  font-size: 24px; /* 文字サイズ */
+}
+
+/* 回転アニメーションのキーフレーム定義 */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); /* 開始時点で0度 */
+  }
+  100% {
+    transform: rotate(360deg); /* 終了時点で360度 */
+  }
+}
+
+.progressContainer {
+  width: 100px; /* プログレスバーの幅を小さく */
+  height: 100px; /* プログレスバーの高さを小さく */
+  margin-bottom: 20px;
+}
+
+.loaderContainer {
+  position: fixed; /* 固定位置 */
+  top: 0;
+  left: 0;
+  width: 100%; /* 幅全体 */
+  height: 100vh; /* 画面の高さ全体 */
+  background-color: rgba(0, 0, 0, 0.9); /* 半透明の黒色背景 */
+  z-index: 9999; /* 他の要素より前面に表示 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #61dafb;
+}
+
+.logoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.loadingText {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.lineProgressContainer {
+  width: 40%; 
+  margin-bottom: 20px;
+}
+
+/* 中止ボタンのスタイル設定 */
+.cancelButton {
+  margin-top: 20px;
+  padding: 15px 30px; /* ボタンを大きく */
+  font-size: 18px; /* フォントサイズを大きく */
+  color: white; /* ボタンの文字色を白に */
+  background-color: #61dafb; 
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.cancelButton:hover {
+  background-color: #cc0000; /* ホバー時の背景色を濃い赤に */
+  transform: scale(1.1); /* ホバー時に少し拡大 */
+}

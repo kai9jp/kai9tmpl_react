@@ -1,0 +1,31 @@
+/* GetTableList.module.css */
+
+/* 全体をカバーする親要素 */
+.table-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* 画面全体の高さに相対 */
+}
+
+/* テーブルをラップし、スクロールを有効にする */
+.table-responsive {
+  flex: 1;
+  overflow-y: auto; /* 縦方向のスクロールを有効にする */
+  overflow-x: auto; /* 横方向のスクロールも必要に応じて有効にする */
+  max-height: calc(100vh - 200px); /* 画面の高さに基づき、相対的にテーブルの高さを設定 */
+}
+
+/* テーブルスタイル */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ヘッダー固定用のスタイル */
+.theadLight th {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #f8f9fa; /* 背景色を設定し、スクロール時に見やすく */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1); /* スクロール時にヘッダーを際立たせるためのシャドウ */
+}

@@ -1,0 +1,69 @@
+/* 通知リストのスタイル */
+.toastWrapper {
+  position: fixed; /* 画面の固定位置 */
+  top: 6px; /* 上部からのマージン */
+  right: 20px; /* 右端からのマージン */
+  z-index: 100; /* 他の要素よりも手前に表示 */
+  border-radius: 10px; /* 角丸 */
+}
+
+/* 通知アイコンのボタンにマージンを追加 */
+.toastWrapper .btn {
+  margin-left: 10px;
+  z-index: 1; /* ボタンを通知ポップアップの前面に表示 */
+}
+
+/* 通知ポップアップのヘッダーのスタイル */
+.toastHeader {
+  color: dodgerblue; /* 青色で表示 */
+}
+
+/* 通知ポップアップの本文のスタイル */
+.toastBody {
+  padding: 0.3rem; /* 上下の余白を追加 */
+}
+
+/* 通知ポップアップのスタイル */
+.toast {
+  position: relative; /* 相対的に位置を指定 */
+  width: 300px; /* 幅を指定 */
+  animation-name: toast; /* アニメーション名 */
+  animation-duration: 10s; /* アニメーションの時間 */
+  animation-timing-function: ease-out; /* アニメーションのタイミング */
+  animation-fill-mode: forwards; /* アニメーション終了時に状態を維持 */
+
+  /* 外見 */
+  overflow: hidden; /* ポップアップからはみ出した部分を非表示 */
+  font-size: 0.875rem; /* フォントサイズを縮小 */
+  background-color: rgba(255, 255, 255, 0.85); /* 背景色 */
+  background-clip: padding-box; /* 背景をpadding-boxに限定 */
+  border: 1px solid rgba(0, 0, 0, 0.1); /* 枠線 */
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1); /* 影 */
+  -webkit-backdrop-filter: blur(10px); /* Webkitブラウザ用のフィルタ */
+  backdrop-filter: blur(10px); /* フィルタ */
+  border-radius: 0.45rem; /* 角丸 */
+}
+
+/* アニメーションのキーフレーム */
+@keyframes toast {
+  /* 透明、右にはみ出した場所から開始 */
+  0% {
+     opacity: 0;
+     transform: translateX(250px);
+  }
+  /* 1秒後に本来の位置と濃度90%で表示 */
+  10% {
+     opacity: 0.9;
+     transform: translateX(0);
+  }
+  /* 8秒後から、次第に透明にしていく */
+  80% {
+    opacity: 0.9;
+    transform: translateX(0);
+ }
+ /* 最後は透明にしてポップアップを非表示にする */
+ 100% {
+   opacity: 0;
+   transform: translateX(0);
+  }
+}

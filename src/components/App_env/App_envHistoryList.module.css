@@ -1,0 +1,31 @@
+.portlet400 {
+  max-height: 400px;
+}
+
+.historyposition {
+  position: absolute;
+  left: 110px;
+  top: 14px;
+  opacity: 0.7;
+}
+
+.btnBlack {
+  background-color: rgb(0, 0, 0);
+  border-color: indianred;
+  margin-left: 30px;
+  opacity: 0.7;
+}
+
+.selected {
+  background-color:lavender;
+}
+.deleted {
+  background-color: #C0C0C0;
+}
+.selected.deleted {
+  background-color: #D1BFCF;
+}
+
+.tablerow {
+  cursor: pointer;
+}

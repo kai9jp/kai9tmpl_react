@@ -1,0 +1,5 @@
+/* Add this to your CSS file or inside a <style> tag */
+.disabled-input {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}

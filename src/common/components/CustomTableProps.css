@@ -1,0 +1,27 @@
+/* ウィンドウ制御用ボタンを含む要素のスタイル */
+.window-controls {
+  /* 右上に配置 */
+  position: absolute;
+  right: 0px;
+  top:-8px;
+  z-index: 9999;
+}
+
+/* ウィンドウ制御用ボタンのスタイル */
+.window-controls button {
+  /* 背景色を透明にし、ボーダーを削除 */
+  background-color: transparent;
+  border: none;
+  /* カーソルをポインターに設定 */
+  cursor: pointer;
+  width:30px;
+  height:30px;
+}
+
+/* ボタンのホバースタイル */
+.window-controls button:hover {
+  /* 背景色を明るくする */
+  background-color: #e0e0e0;
+  /* ボーダーの角を丸くする */
+  border-radius: 20%;
+}

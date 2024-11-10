@@ -1,0 +1,84 @@
+/* ホワイト背景と余白の設定 */
+.white-breadcrumb {
+  background-color: white;
+  margin-top: 15px;
+}
+
+/* テキストの色、サイズ、太さを設定 */
+.kai9text {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* ナビバーの上部のスペース、線、パディング、位置を設定 */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.5rem 1rem;
+}
+
+/* 縦方向の中央揃えを設定 */
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+/* アイテムの縦方向と横方向の中央揃えを設定 */
+.align-items-center-custom {
+  display: flex;
+  align-items: center;
+}
+
+/* 上部ナビバーのパンくずリストの余白を設定 */
+.breadcrumb {
+  margin-bottom: 0;
+}
+
+/* 上部ナビバーのパンくずリストの色を設定 */
+.dark-breadcrumb {
+  color: #6c757d;
+  background-color: transparent;
+}
+
+/* ナビバーの幅、位置、アイテムの中央揃えを設定 */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* ナビバーのアイテム間の縦線の設定 */
+.topbar-divider {
+  margin: 0 10px;
+  height: 40px;
+}
+
+/* スマートフォン表示時のテキストサイズの調整 */
+@media (max-width: 767.98px) {
+  .kai9text {
+    font-size: 14px;
+  }
+}
+
+/* パンくずリストの最初のアイテムの余白の調整 */
+.breadcrumb-item:first-child {
+  margin-right: 5px;
+}
+
+/* パンくずリストの最後のアイテムにスラッシュを追加 */
+.breadcrumb-item:last-child:before {
+  content: "/";
+  margin: 0 5px;
+  color: #6c757d;
+}
+
+/* ナビバーのアイテム間の縦線の設定 */
+.topbarDivider {
+  margin: 24px 10px;
+  height: 40px;
+  border-right: 1px solid #dee2e6; 
+}
