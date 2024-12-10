@@ -10,10 +10,11 @@ interface LoadingIndicatorProps {
   progress1?: number; // 上段の進行状況のパーセンテージ
   progress2?: number; // 下段の進行状況のパーセンテージ
   setProgress_status_stop?:any;
+  CancelVisible? : boolean;
 }
 
 /* ローディングインジケータコンポーネントの定義 */
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ progress1, progress2,setProgress_status_stop }) => {
+const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ progress1, progress2,setProgress_status_stop,CancelVisible = true }) => {
   const [loading, setLoading] = useState(true); // ローディング状態の管理
 
   /* コンポーネントがマウントされた後に一度だけ実行 */
@@ -74,9 +75,12 @@ const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ progress1, progress
       <div className={styles.loadingText}>loading...</div>
       
       {/* 中止ボタンの追加 */}
-      <button className={styles.cancelButton} onClick={handleCancel}>
-        中止
-      </button>
+      {CancelVisible && (
+        <button className={styles.cancelButton} onClick={handleCancel}>
+          中止
+        </button>
+      )}
+
     </div>
   );
 };
