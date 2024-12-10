@@ -4,7 +4,7 @@ import React from "react";
 import ReactPaginate from "react-paginate";
 import "./pagination.css";
 import NumberInput from "../../common/components/NumberInput";
-import { OnChangeModel } from "../../non_common/types/Form.types";
+import { OnChangeModel } from "non_common/types/Form.types";
 
 interface PaginationProps {
   dataCounts:any,
@@ -31,12 +31,11 @@ const Pagination = (props: PaginationProps) => {
   };
 
   //表示件数変更時のイベント
-  function on_numberOfDisplaysPerpage_ValueChanged(model: OnChangeModel): void {
-    if (model.value === 0) return;
-    if (!props.SetnumberOfDisplaysPerpage) return;
-    props.SetnumberOfDisplaysPerpage(Number(model.value));
-  }
-
+  function on_numberOfDisplaysPerpage_ValueChanged(event: React.ChangeEvent<HTMLInputElement>): void {
+    const value = Number(event.target.value); 
+    if (value === 0) return; 
+    props.SetnumberOfDisplaysPerpage(value); 
+}
 
   return (
     <>
