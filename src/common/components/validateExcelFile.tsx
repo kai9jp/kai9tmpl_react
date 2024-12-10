@@ -1,3 +1,4 @@
+
 import Swal from 'sweetalert2';
 import * as xlsx from 'xlsx';
 import { callApi } from '../comUtil';
@@ -145,32 +146,55 @@ function checkRequiredColumns(headers: string[], requiredColumns: string[], data
 }
 
 // カラムの長さをチェック
-function checkColumnLengths(headers: string[], types: string[], columnLengths: { [key: string]: string }, row: any[], rowIndex: number): string[] {
+function checkColumnLengths(
+  headers: string[],
+  types: string[],
+  columnDetails: { [key: string]: { maxLength?: number; precision?: number; scale?: number; notnull?: boolean } },
+  row: any[],
+  rowIndex: number
+): string[] {
   const errors: string[] = [];
-  
+
   // 各カラムの長さをチェック
   headers.forEach((header, index) => {
-    const maxLength = columnLengths[header]; // カラムごとの最大長を取得
+    const columnInfo = columnDetails[header]; // カラムごとの詳細情報を取得
+    const maxLength = columnInfo?.maxLength; // 最大長を取得
     const type = types[index]; // カラムのデータ型を取得
 
     // 最大長とカラムの値が存在する場合にチェックを行う
     if (maxLength && row[index] !== null && row[index] !== undefined) {
-      // 数値型（numericだけ）
       if (type === 'numeric') {
-        const [precision, scale] = maxLength.split(',').map(Number); // 精度とスケールを取得
-        const [integerPart, fractionalPart] = row[index].toString().split('.'); // 数値を文字列に変換してから整数部と小数部に分割
+        // 数値型の場合（精度とスケールのチェック）
+        const precision = columnInfo?.precision;
+        const scale = columnInfo?.scale;
 
-        // 整数部の長さをチェック
-        if (integerPart.length > precision - scale) {
-          errors.push(`行 ${rowIndex + 1} 列 ${header}: 整数部の最大長を超えています（${precision - scale} 桁まで、値: ${row[index]}）。`);
+        if (precision !== undefined && scale !== undefined) {
+          const [integerPart, fractionalPart] = row[index].toString().split('.'); // 数値を文字列に変換してから整数部と小数部に分割
+
+          // 整数部の長さをチェック
+          if (integerPart.length > precision - scale) {
+            errors.push(
+              `行 ${rowIndex + 1} 列 ${header}: 整数部の最大長を超えています（${precision - scale} 桁まで、値: ${row[index]}）。`
+            );
+          }
+
+          // 小数部の長さをチェック
+          if (fractionalPart && fractionalPart.length > scale) {
+            errors.push(
+              `行 ${rowIndex + 1} 列 ${header}: 小数部の最大長を超えています（${scale} 桁まで、値: ${row[index]}）。`
+            );
+          }
+        } else {
+          // 精度やスケールが不足している場合
+          errors.push(`行 ${rowIndex + 1} 列 ${header}: 精度またはスケールが定義されていません。`);
         }
-        // 小数部の長さをチェック
-        if (fractionalPart && fractionalPart.length > scale) {
-          errors.push(`行 ${rowIndex + 1} 列 ${header}: 小数部の最大長を超えています（${scale} 桁まで、値: ${row[index]}）。`);
-        }
-      } else if (row[index].toString().length > maxLength) {
+      } else {
         // 数値型以外の場合の長さチェック
-        errors.push(`行 ${rowIndex + 1} 列 ${header}: 最大長を超えています（${maxLength} 文字まで、値: ${row[index]}）。`);
+        if (row[index].toString().length > maxLength) {
+          errors.push(
+            `行 ${rowIndex + 1} 列 ${header}: 最大長を超えています（${maxLength} 文字まで、値: ${row[index]}）。`
+          );
+        }
       }
     }
   });
@@ -238,17 +262,38 @@ async function fetchDbInfo(tableName: string) {
 }
 
 // 型チェック
-function checkTypes(headers: string[], types: string[], data: any[][]): string[] {
+function checkTypes(
+  headers: string[],
+  types: string[],
+  data: any[][],
+  columnDetails: {
+    [key: string]: { maxLength?: number; precision?: number; scale?: number; notnull?: boolean };
+  }
+): string[] {
   return data.flatMap((row, rowIndex) =>
     headers.map((header, colIndex) => {
       const expectedType = types[colIndex].toLowerCase();
       const value = row[colIndex];
-      // 日付型の場合はisValidDate関数を使用
-      const isValid = (expectedType === 'date' || expectedType === 'datetime') 
-        ? isValidDate(value) 
-        : formatValueByType(expectedType, value);
+      const columnInfo = columnDetails[header];
+      const isNotNull = columnInfo?.notnull ?? true; // デフォルトはtrue（notnullと仮定）
+
+      // 値が空でnotnullがfalseの場合、エラーにしない
+      if (!isNotNull && (value === null || value === undefined || value === '')) {
+        return ''; // 空の場合はエラーを生成しない
+      }
+
+      // 型チェック: 日付型の場合はisValidDate関数を使用
+      const isValid =
+        (expectedType === 'date' || expectedType === 'datetime')
+          ? isValidDate(value)
+          : formatValueByType(expectedType, value);
+
       // データ型が不正な場合にエラーメッセージを生成
-      return isValid ? '' : `行 ${rowIndex + 1} 列 ${header}: データ型が不正です（期待される型: ${expectedType}、値: ${value ?? 'undefined'}）。`;
+      return isValid
+        ? ''
+        : `行 ${rowIndex + 1} 列 ${header}: データ型が不正です（期待される型: ${expectedType}、値: ${
+            value ?? 'undefined'
+          }）。`;
     }).filter(error => error) // エラーメッセージがある場合にフィルタリング
   );
 }
@@ -378,7 +423,8 @@ async function validateExcelFile(
     rowIndex: number, 
     headers: string[], 
     types: string[], 
-    values: any
+    values: any,
+    columnDetails: { [key: string]: { maxLength?: number; precision?: number; scale?: number; notnull?: boolean } }
   ) => Promise<string[]>,
   tableName: string,
   values: any,
@@ -401,10 +447,10 @@ async function validateExcelFile(
     const requiredColumnsErrors = checkRequiredColumns(headers, dbInfo.requiredColumns, data);
     
     // カラム長のチェック
-    const columnLengthsErrors = data.flatMap((row, rowIndex) => checkColumnLengths(headers, types,dbInfo.columnLengths, row, rowIndex));
+    const columnLengthsErrors = data.flatMap((row, rowIndex) => checkColumnLengths(headers, types,dbInfo.columnDetails, row, rowIndex));
 
     // 型チェック
-    const typeErrors = checkTypes(headers, types, data);
+    const typeErrors = checkTypes(headers, types, data ,dbInfo.columnDetails);
 
     // ユニークカラムの重複チェック(投入データ内だけ)
     const uniqueColumnsErrors = checkUniqueColumns(headers, dbInfo.uniqueColumns, data);
@@ -419,7 +465,7 @@ async function validateExcelFile(
     }
 
     // カスタムチェックの実行
-    const customErrors = await Promise.all(data.map((row, rowIndex) => customChecks(row, rowIndex, headers, types,values)));
+    const customErrors = await Promise.all(data.map((row, rowIndex) => customChecks(row, rowIndex, headers, types,values, dbInfo.columnDetails)));
     const flattenedCustomErrors = customErrors.flat();
     
     // すべてのエラーメッセージを結合
