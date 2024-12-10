@@ -485,26 +485,45 @@ function Single_tables(props: single_tablesProps): JSX.Element  {
     return errors; // エラーメッセージの配列を返す
   }  
 
-// 指定された値がAPIから取得したデータに存在するかをチェックする関数
-function validateValueExists(row: any[], rowIndex: number, headers: string[], columnName: string, validValues: string[], errorMessage: string): string[] {
-  const errors: string[] = [];
-  const columnIndex = headers.indexOf(columnName);
+  // 指定された値がAPIから取得したデータに存在するかをチェックする関数
+  function validateValueExists(
+    row: any[], 
+    rowIndex: number, 
+    headers: string[], 
+    columnName: string, 
+    validValues: string[], 
+    errorMessage: string,
+    columnDetails: { [key: string]: { maxLength?: number; precision?: number; scale?: number; notnull?: boolean } }
+  ): string[] {
+    const errors: string[] = [];
+    const columnIndex = headers.indexOf(columnName);
 
-  // リレーション
-  let relations: string[] = [
-    //【制御:開始】relation⑥
-    "related_pk=related_table_a.related_pk:related_table_a.related_data",
-    //【制御:終了】relation⑥
-  ];
+    // リレーション
+    const relations: string[] = [
+      //【制御:開始】relation⑥
+      "related_pk=related_table_a.related_pk:related_table_a.related_data",
+      //【制御:終了】relation⑥
+    ];
 
-  if (columnIndex !== -1) {
+    // カラムが存在しない場合は終了
+    if (columnIndex === -1) {
+      return errors;
+    }
+
     const value = row[columnIndex];
-    
+    const columnInfo = columnDetails[columnName];
+    const isNotNull = columnInfo?.notnull ?? true; // デフォルトでnotnull=trueと仮定
+
+    // 値が空かつnotnullがfalseの場合、エラーを生成せず終了
+    if (!isNotNull && (value === null || value === undefined || value === '')) {
+      return errors; // エラーなし
+    }
+
     // relationsに対象のカラムが含まれているか確認
     const isRelationColumn = relations.some(relation => relation.startsWith(`${columnName}=`));
-    
+
     let checkValue = value;
-    if (isRelationColumn) {
+    if (isRelationColumn && value) {
       // ":"で区切られた値の左側を抽出
       checkValue = value.split(':')[0];
     }
@@ -513,9 +532,10 @@ function validateValueExists(row: any[], rowIndex: number, headers: string[], co
     if (!values.includes(checkValue)) {
       errors.push(`行 ${rowIndex + 1} 列 ${columnName}: ${errorMessage}（値: ${row[columnIndex]}）。`);
     }
+
+    return errors;
   }
-  return errors;
-}
+
 
   //【制御:開始】relation②
   //APIから有効なコード値のリストを取得する関数
@@ -531,7 +551,8 @@ function validateValueExists(row: any[], rowIndex: number, headers: string[], co
     //【制御:終了】relation②
 
   // カスタムチェック関数
-  async function customChecks(row: any[], rowIndex: number, headers: string[], types: string[], values: any): Promise<string[]> {
+  async function customChecks(row: any[], rowIndex: number, headers: string[], types: string[], values: any, columnDetails: { [key: string]: { maxLength?: number; precision?: number; scale?: number; notnull?: boolean } }): Promise<string[]> {
+  
     const errors: string[] = [];
 
     //--------------------------------------------------------------
@@ -670,7 +691,7 @@ function validateValueExists(row: any[], rowIndex: number, headers: string[], co
     columnName = 'related_pk';
     errorMessage = '無効な値が入力されています';
     validValues = values['apivalues_single_table_related_table_related_pk_related_data_find_all_selectInput'];
-    errors.push(...validateValueExists(row, rowIndex, headers, columnName, validValues, errorMessage));
+    errors.push(...validateValueExists(row, rowIndex, headers, columnName, validValues, errorMessage, columnDetails));
     //【制御:終了】relation③
 
     return errors;
