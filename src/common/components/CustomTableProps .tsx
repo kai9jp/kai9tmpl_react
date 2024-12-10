@@ -32,6 +32,8 @@ interface CustomTableProps {
     headerButtonsCol?:string;
     //常に最大化制御
     alwaysMaximized ?:boolean;
+    //最大化、最小化ボタンの非表示
+    hideWinButtons ?:boolean;
 }
 
 const CustomTable: React.FC<CustomTableProps> = (props:CustomTableProps) => {
@@ -394,19 +396,17 @@ const CustomTable: React.FC<CustomTableProps> = (props:CustomTableProps) => {
         const savedData = localStorage.getItem(KEY_Pagination);
         if (savedData) {
             const parseData = JSON.parse(savedData) as ComponentPagination;
-            props.SetCurrentPage(parseData.currentPage);
             props.setnumberOfDisplaysPerpage(parseData.numberOfDisplaysPerpage);
         }else{
             //ストレージに無い場合は初期値をセット
-            props.SetCurrentPage(1);
             props.setnumberOfDisplaysPerpage(100);
         }
+        // currentPage の初期値 1 をセット
+        props.SetCurrentPage(1);
+
     }, []);
 
     function MySetCurrentPage(CurrentPage:number){
-        // ローカルストレージへの保存
-        const data = { currentPage: CurrentPage, numberOfDisplaysPerpage: props.numberOfDisplaysPerpage };
-        localStorage.setItem(KEY_Pagination, JSON.stringify(data));
         //親のsetstate
         props.SetCurrentPage(CurrentPage);
     }
@@ -551,7 +551,7 @@ const CustomTable: React.FC<CustomTableProps> = (props:CustomTableProps) => {
                             {props.headerButtons}
                         </div>
                         <div className="col-md-1">
-                          {!props.alwaysMaximized? windowButtons : null}
+                          {!props.alwaysMaximized && !props.hideWinButtons ? windowButtons : null}
                         </div>
                     </div>
                 </div>
