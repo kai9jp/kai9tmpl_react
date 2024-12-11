@@ -323,7 +323,7 @@ function Single_tables(props: single_tablesProps): JSX.Element  {
 
   // エクスポートボタン
   const exportButton = (
-    <button className={`btn btn-sm btn-success ${styles.btnGray}`}  onClick={() => excelDownloadButton()}>
+    <button className={`btn btn-sm btn-success ${styles.btnGray}`}  id="export_button" onClick={() => excelDownloadButton()}>
       <span>排出</span>
       <i className="fas fa-file-export ml-1" title="エクスポート"></i>
     </button>
@@ -331,7 +331,7 @@ function Single_tables(props: single_tablesProps): JSX.Element  {
 
   // インポートボタン
   const importButton = (
-    <button className={`btn btn-sm btn-success ${styles.btnGray}`}  onClick={() => excelImportHandleOpenModal()}>
+    <button className={`btn btn-sm btn-success ${styles.btnGray}`}  id="import_button" onClick={() => excelImportHandleOpenModal()}>
       <span>取込</span>
       <i className="fas fa-file-import ml-1" title="インポート"></i>
     </button>
