@@ -41,7 +41,7 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "start": "set HTTPS=true&&set PORT=3004&&react-scripts start",
+    "start": "set HTTPS=true&&set PORT=3002&&react-scripts start",
     "build": "react-scripts build && copy .htaccess build\\",
     "clean": "rimraf ./build",
     "test": "react-scripts test",
